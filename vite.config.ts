@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 import tailwindPostcss from '@tailwindcss/postcss'
 import autoprefixer from 'autoprefixer'
@@ -12,5 +12,9 @@ export default defineConfig({
         autoprefixer(),
       ],
     },
+  },
+  test: {
+    environment: 'jsdom',
+    setupFiles: './vitest.setup.ts',
   },
 })
