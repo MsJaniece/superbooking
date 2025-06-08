@@ -1,24 +1,33 @@
 // src/components/BookingForm.tsx
 
-import { useState } from 'react'
+import { useState, useEffect, FormEvent } from 'react'
 import { services, Service } from './ServiceCatalog'
 
-export default function BookingForm() {
-  const [name,    setName]    = useState('')
-  const [service, setService] = useState('')
-  const [date,    setDate]    = useState('')
-  const [time,    setTime]    = useState('')
+interface Props {
+  initialService: string
+}
 
-  const handleSubmit = (e: React.FormEvent) => {
+export default function BookingForm({ initialService }: Props) {
+  const [name, setName]             = useState('')
+  const [service, setService]       = useState(initialService)
+  const [date, setDate]             = useState('')
+  const [time, setTime]             = useState('')
+
+  // Update form when the selected service changes
+  useEffect(() => {
+    setService(initialService)
+  }, [initialService])
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     console.log({ name, service, date, time })
-    // TODO: hook up to your API or global state
+    // TODO: call your API to create the booking
   }
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="max-w-md mx-auto bg-white p-6 rounded-lg shadow"
+      className="w-full max-w-md mx-auto bg-white p-6 rounded-lg shadow"
     >
       <h2 className="text-2xl font-semibold mb-4">Book an Appointment</h2>
 
@@ -50,7 +59,7 @@ export default function BookingForm() {
         </select>
       </label>
 
-      <div className="grid grid-cols-2 gap-4 mb-4">
+      <div className="grid grid-cols-2 gap-4 mb-6">
         <label className="block">
           <span className="font-medium">Date</span>
           <input
