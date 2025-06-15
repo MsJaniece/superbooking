@@ -1,46 +1,41 @@
-// src/components/BookingForm.tsx
-
 import { useState, useEffect, FormEvent } from 'react'
-import { services, Service } from './ServiceCatalog'
+import { services, Service }             from '../Data/services'
 
 const TIME_SLOTS = [
-  '09:00', '10:00', '11:00', '12:00',
-  '13:00', '14:00', '15:00', '16:00',
-  '17:00'
+  '09:00','10:00','11:00','12:00',
+  '13:00','14:00','15:00','16:00',
+  '17:00',
 ]
 
 export default function BookingForm({
-  initialService,
-  fakeBusy,
+  initialService = '',
+  fakeBusy     = false,
 }: {
-  initialService: string
-  fakeBusy: boolean
+  initialService?: string
+  fakeBusy?: boolean
 }) {
-  const [name, setName]             = useState('')
-  const [service, setService]       = useState(initialService)
-  const [date, setDate]             = useState('')
-  const [time, setTime]             = useState('')
-  const [blockedSlots, setBlockedSlots] = useState<string[]>([])
+  const [name, setName]           = useState('')
+  const [service, setService]     = useState(initialService)
+  const [date, setDate]           = useState('')
+  const [time, setTime]           = useState('')
+  const [blocked, setBlocked]     = useState<string[]>([])
 
-  // Sync initialService prop into local state
   useEffect(() => {
     setService(initialService)
   }, [initialService])
 
-  // When fakeBusy toggles ON, randomly block ~30% of slots
   useEffect(() => {
-    if (fakeBusy) {
-      const newBlocked = TIME_SLOTS.filter(() => Math.random() < 0.3)
-      setBlockedSlots(newBlocked)
-    } else {
-      setBlockedSlots([])
-    }
+    setBlocked(
+      fakeBusy
+        ? TIME_SLOTS.filter(() => Math.random() < 0.3)
+        : []
+    )
   }, [fakeBusy])
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
     console.log({ name, service, date, time })
-    // TODO: integrate with booking API
+    alert(`Appointment confirmed for ${name}:\n• ${service}\n• ${date} @ ${time}`)
   }
 
   return (
@@ -98,7 +93,7 @@ export default function BookingForm({
           required
         >
           <option value="">Select a time…</option>
-          {TIME_SLOTS.filter(slot => !blockedSlots.includes(slot)).map(slot => (
+          {TIME_SLOTS.filter(slot => !blocked.includes(slot)).map(slot => (
             <option key={slot} value={slot}>
               {slot}
             </option>
@@ -110,7 +105,7 @@ export default function BookingForm({
         type="submit"
         className="w-full bg-pink-600 hover:bg-pink-700 text-white font-semibold py-2 rounded-lg"
       >
-        Book Now
+        Confirm Appointment
       </button>
     </form>
   )
