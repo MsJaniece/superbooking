@@ -1,24 +1,21 @@
-// src/App.tsx
-import { useState } from 'react'
-import ServiceCatalog from './components/ServiceCatalog'
-import BookingForm    from './components/BookingForm'
+import React, { useState } from 'react';
+import AppLayout from './components/AppLayout';
+import ServiceCatalog from './components/ServiceCatalog';
+import BookingForm from './components/BookingForm';
 
 export default function App() {
-  const [selectedService, setSelectedService] = useState('')
-  const [fakeBusy, setFakeBusy]               = useState(false)
+  const [selectedService, setSelectedService] = useState<string>('');
+  const [fakeBusy, setFakeBusy] = useState<boolean>(false);
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      {/* Fake-Busy Toggle */}
+    <AppLayout>
+      {/* Fake Busy Toggle */}
       <div className="flex justify-end mb-6">
         <button
-          onClick={() => setFakeBusy(!fakeBusy)}
-          className={
-            `px-4 py-2 rounded-lg font-semibold ` +
-            (fakeBusy
-              ? 'bg-red-500 text-white'
-              : 'bg-gray-200 text-gray-800')
-          }
+          onClick={() => setFakeBusy(prev => !prev)}
+          className={`px-4 py-2 rounded-lg font-semibold ${
+            fakeBusy ? 'bg-red-500 text-white' : 'bg-gray-200 text-gray-800'
+          }`}
         >
           {fakeBusy ? 'Fake Busy: ON' : 'Fake Busy: OFF'}
         </button>
@@ -35,6 +32,6 @@ export default function App() {
           fakeBusy={fakeBusy}
         />
       </div>
-    </div>
-  )
+    </AppLayout>
+  );
 }

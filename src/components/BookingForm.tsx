@@ -1,48 +1,45 @@
+// src/components/BookingForm.tsx
 import { useState, useEffect, FormEvent } from 'react'
-import { services, Service }             from '../Data/services'
+import { services, Service } from '../Data/services'
 
 const TIME_SLOTS = [
-  '09:00','10:00','11:00','12:00',
-  '13:00','14:00','15:00','16:00',
-  '17:00',
+  '09:00', '10:00', '11:00', '12:00',
+  '13:00', '14:00', '15:00', '16:00', '17:00',
 ]
 
 export default function BookingForm({
   initialService = '',
-  fakeBusy     = false,
+  fakeBusy = false,
 }: {
   initialService?: string
   fakeBusy?: boolean
 }) {
-  const [name, setName]           = useState('')
-  const [service, setService]     = useState(initialService)
-  const [date, setDate]           = useState('')
-  const [time, setTime]           = useState('')
-  const [blocked, setBlocked]     = useState<string[]>([])
+  const [name, setName] = useState('')
+  const [service, setService] = useState(initialService)
+  const [date, setDate] = useState('')
+  const [time, setTime] = useState('')
+  const [blockedSlots, setBlockedSlots] = useState<string[]>([])
 
   useEffect(() => {
     setService(initialService)
   }, [initialService])
 
   useEffect(() => {
-    setBlocked(
-      fakeBusy
-        ? TIME_SLOTS.filter(() => Math.random() < 0.3)
-        : []
-    )
+    if (fakeBusy) {
+      const busy = TIME_SLOTS.filter(() => Math.random() < 0.3)
+      setBlockedSlots(busy)
+    } else {
+      setBlockedSlots([])
+    }
   }, [fakeBusy])
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
-    console.log({ name, service, date, time })
-    alert(`Appointment confirmed for ${name}:\n• ${service}\n• ${date} @ ${time}`)
+    alert(JSON.stringify({ name, service, date, time }, null, 2))
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="w-full max-w-md bg-white p-6 rounded-lg shadow"
-    >
+    <form onSubmit={handleSubmit} className="w-full max-w-md bg-white p-6 rounded-lg shadow">
       <h2 className="text-2xl font-semibold mb-4">Book an Appointment</h2>
 
       <label className="block mb-4">
@@ -93,9 +90,14 @@ export default function BookingForm({
           required
         >
           <option value="">Select a time…</option>
-          {TIME_SLOTS.filter(slot => !blocked.includes(slot)).map(slot => (
-            <option key={slot} value={slot}>
-              {slot}
+          {TIME_SLOTS.map(slot => (
+            <option
+              key={slot}
+              value={slot}
+              disabled={blockedSlots.includes(slot)}
+              className={blockedSlots.includes(slot) ? 'text-gray-400' : ''}
+            >
+              {slot} {blockedSlots.includes(slot) && '(busy)'}
             </option>
           ))}
         </select>

@@ -9,7 +9,7 @@ export default function ServiceCatalog({
 }) {
   return (
     <section className="w-full max-w-md">
-      <h2 className="text-2xl font-semibold mb-4">Our Services</h2>
+      <h2 className="text-2xl font-semibold mb-4 text-gray-900">Our Services</h2>
       <div className="grid grid-cols-1 gap-4">
         {services.map((s: Service) => {
           const isSelected = s.id === selectedService
@@ -17,12 +17,11 @@ export default function ServiceCatalog({
             <div
               key={s.id}
               onClick={() => onSelect(s.id)}
-              className={
-                `cursor-pointer bg-white rounded-lg shadow p-4 flex flex-col transition ` +
-                (isSelected
+              className={`cursor-pointer bg-white text-gray-900 rounded-lg shadow p-4 flex flex-col transition ${
+                isSelected
                   ? 'border-4 border-pink-600'
-                  : 'border border-transparent hover:border-pink-300')
-              }
+                  : 'border border-gray-200 hover:border-pink-300'
+              }`}
             >
               <img
                 src={s.img}
